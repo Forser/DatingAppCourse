@@ -20,6 +20,8 @@ namespace API.Data
 
     public ILikesRepository LikesRepository => new LikesRepository(_context);
 
+    public IPhotoRepository PhotoRepository => new PhotoRepository(_context);
+
     public async Task<bool> Complete()
     {
       return await _context.SaveChangesAsync() > 0;
@@ -27,7 +29,10 @@ namespace API.Data
 
     public bool HasChanges()
     {
-      return _context.ChangeTracker.HasChanges();
+      _context.ChangeTracker.DetectChanges();
+      var changes = _context.ChangeTracker.HasChanges();
+
+      return changes;
     }
   }
 }

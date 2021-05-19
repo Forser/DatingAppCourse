@@ -48,7 +48,8 @@ namespace API.Controllers
     [HttpGet("{username}", Name = "GetUser")]
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
-      return await _unitOfWork.UserRepository.GetMemberAsync(username);
+      var currentUsername = User.GetUsername();
+      return await _unitOfWork.UserRepository.GetMemberAsync(username, isCurrentUser: currentUsername == username);
     }
 
     [HttpPut]
@@ -69,7 +70,6 @@ namespace API.Controllers
     public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
     {
       var user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
-
       var result = await _photoService.AddPhotoAsync(file);
 
       if (result.Error != null) return BadRequest(result.Error.Message);
